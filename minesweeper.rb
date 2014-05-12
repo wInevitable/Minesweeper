@@ -8,11 +8,31 @@ class Minesweeper
     
   end
   
-  def generate_board(width, height, bombs)
-    
-  end
-  
   protected
   attr_accessor :board, :bombs
   
+  def generate_board(width, height, bombs)
+    board = [[nil] * width] * height
+    
+    tile_pool = []
+    bombs.times do
+      tile_pool << Tile.new(true)
+    end
+    
+    (width * height - bombs).times do
+      tile_pool << Tile.new
+    end
+    
+    tile_pool.shuffle!
+    
+    board.each do |i|
+      board[i].each do |j|
+        board[i][j] = tile_pool.shift
+      end
+    end
+  end
+  
+  def render_board
+    
+  end
 end
