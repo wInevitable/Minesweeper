@@ -38,7 +38,7 @@ class Minesweeper
   end
   
   def generate_board(width, height, bombs)
-    board = [[nil] * width] * height
+    board = Array.new(height) {|index| [nil] * width}
     
     tile_pool = []
     bombs.times do
@@ -87,6 +87,7 @@ class Minesweeper
       action = move[0]
       coordinates = move[1..-1]
       coordinates = coordinates.split(",")
+      coordinates.map! {|el| Integer(el)}
     
       case action
       when "r"
