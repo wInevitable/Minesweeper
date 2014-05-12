@@ -4,10 +4,11 @@ class Minesweeper
   def initialize(width = 9, height = 9, bombs = 10)
     self.width, self.height = width, height
     self.bombs = bombs
-    self.board = generate_board
   end
   
-  def play    
+  def play
+    generate_board
+       
     until over?
       render_board
       player_move
@@ -16,6 +17,13 @@ class Minesweeper
   
   protected
   attr_accessor :board, :bombs, :width, :height
+  
+  DELTAS = [
+    [1, 0], [-1, 0],
+    [0, 1], [0, -1],
+    [-1, 1], [1, -1],
+    [-1, -1], [1, 1]
+  ]
   
   def revealed
     self.board.inject(0) do |sum, row|
@@ -38,7 +46,7 @@ class Minesweeper
   end
   
   def generate_board
-    board = Array.new(@height) {|index| [nil] * @width}
+    @board = Array.new(@height) {|index| [nil] * @width}
     
     tile_pool = []
     @bombs.times do
@@ -51,20 +59,33 @@ class Minesweeper
     
     tile_pool.shuffle!
     
-    board.each_index do |row|
-      board[row].each_index do |col|
-        board[row][col] = tile_pool.shift
-        board[row][col].neighbors = get_neighbors(row, col)
+    @board.each_index do |row|
+      @board[row].each_index do |col|
+        @board[row][col] = tile_pool.shift
+      end
+    end
+    
+    @board.each_index do |row|
+      @board[row].each_index do |col|
+        @board[row][col].neighbors = get_neighbors(row, col)
       end
     end
   end
   
-  def get_neighbors(x, y)
+  def get_neighbors(row, col)
+    positions = DELTAS.map { |r, c| [row + r, col + c] }
+    positions.select! { |r, c| r >= 0 && c >= 0 && r < height && c < width }
+ 
+    neighbors = []
+    positions.each do |pos|
+      neighbors << @board[pos[0]][pos[1]]
+    end
     
+    neighbors
   end
   
   def render_board
-    board.each do |row|
+    @board.each do |row|
       row.each_index do |j|
         if row[j].revealed?
           print row[j].bomb_count
