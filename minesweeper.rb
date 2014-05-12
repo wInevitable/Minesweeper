@@ -54,6 +54,10 @@ class Minesweeper
       move = gets.chomp
       action, arg = move.split(" ")
       
+      if action.size > 1
+        raise IOError.new("Invalid Command. Usage: <command> <args>")
+      end
+      
       commands = ["s", "l", "q"]
       if !commands.include?(action)
         coordinates = arg.split(",")
@@ -75,7 +79,7 @@ class Minesweeper
         raise IOError.new("That is not an action.")
       end
     rescue IOError => e
-      e.message
+      puts e.message
       retry
     end
   end
