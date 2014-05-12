@@ -32,22 +32,23 @@ class Board
   end
     
   def render(render_bombs = false)
-    print "  |"
+    print "    |"
     @board[0].each_index do |i|
-      print i
+      print "#{i}".rjust(3, " ")
     end
     
     puts
-    puts "-" * (@width + 3)
+    puts "-" * (@width * 3 + 5)
     
     @board.each_index do |row|
-      print "#{row} |"
+      index = "#{row}".rjust(3, " ")
+      print "#{index} | "
       @board[row].each_index do |j|
         tile = @board[row][j]
         if render_bombs && tile.bomb?
-          print "*"
+          print " * "
         else
-          print "#{tile}"
+          print " #{tile} "
         end
       end
       print "\n"
