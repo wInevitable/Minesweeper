@@ -67,6 +67,8 @@ class Minesweeper
         self.save(arg)
       when "l"
         self.load(arg)
+      when "q"
+        exit
       else
         raise IOError.new("That is not an action.")
       end
