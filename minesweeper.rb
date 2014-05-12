@@ -1,17 +1,18 @@
-class Tile
-  attr_writer :bomb, :flag
-  
-  attr_accessor :bomb_count
-  
-  def initialize(bomb = false, flag = false, bomb_count = 0)
-    @bomb, @flag, @bomb_count = bomb, flag, bomb_count
-  end
-
-  def bomb?
-    @bomb
+class Minesweeper
+  def initialize(width = 9, height = 9, bombs = 10)
+    self.board = generate_board(width, height, bombs)
+    self.bombs = bombs
   end
   
-  def flag?
-    @flag
+  def play
+    
   end
+  
+  def generate_board(width, height, bombs)
+    
+  end
+  
+  protected
+  attr_accessor :board, :bombs
+  
 end
