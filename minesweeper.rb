@@ -103,7 +103,23 @@ class Minesweeper
   end
   
   def reveal(x, y)
-    self.board[x][y].revealed = true
+    tile = self.board[x][y]
+    queue = [tile]
+    seen_tiles = []
+    
+    until queue.empty?
+      this_tile = queue.shift
+      this_tile.revealed = true
+      seen_tiles << this_tile
+      
+      if this_tile.bomb_count == 0
+        new_tiles = this_tile.neighbors
+        new_tiles.select! { |t| !seen_tiles.include?(t) }
+        queue += new_tiles
+      end
+    end
+    
+    nil
   end
   
   def player_move
