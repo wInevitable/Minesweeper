@@ -1,11 +1,22 @@
 require_relative "tile"
 require_relative "board"
+require "yaml"
 
 class Minesweeper
   def initialize(width = 9, height = 9, bombs = 10)
     self.width, self.height = width, height
     self.bombs = bombs
     self.board = Board.new(width, height, bombs)
+  end
+
+  def load(file)
+      
+  end
+  
+  def save(file)
+    File.open(file, 'w') do |file|
+      file.write(self.board.to_yaml)
+    end
   end
   
   def play
@@ -40,15 +51,19 @@ class Minesweeper
     begin
       move = gets.chomp
       action = move[0]
-      coordinates = move[1..-1]
-      coordinates = coordinates.split(",")
-      coordinates.map! {|el| Integer(el)}
+      arg = move[1..-1]
+      if action != "s"
+        coordinates = arg.split(",")
+        coordinates.map! {|el| Integer(el)}
+      end
     
       case action
       when "r"
         self.board.reveal(*coordinates)
       when "f"
         self.board.flag(*coordinates)
+      when "s"
+        self.save(arg)
       else
         raise IOError.new("That is not an action.")
       end
