@@ -2,9 +2,9 @@ require_relative "tile"
 
 class Minesweeper
   def initialize(width = 9, height = 9, bombs = 10)
-    self.board = generate_board(width, height, bombs)
     self.width, self.height = width, height
     self.bombs = bombs
+    self.board = generate_board
   end
   
   def play    
@@ -30,32 +30,37 @@ class Minesweeper
       end
     end
 
-    bomb_revealed || (width * height - bombs) == revealed
+    bomb_revealed || (@width * @height - @bombs) == revealed
   end
   
   def won?
     
   end
   
-  def generate_board(width, height, bombs)
-    board = Array.new(height) {|index| [nil] * width}
+  def generate_board
+    board = Array.new(@height) {|index| [nil] * @width}
     
     tile_pool = []
-    bombs.times do
+    @bombs.times do
       tile_pool << Tile.new(true)
     end
     
-    (width * height - bombs).times do
+    (@width * @height - @bombs).times do
       tile_pool << Tile.new
     end
     
     tile_pool.shuffle!
     
-    board.each do |row|
-      row.each_index do |j|
-        row[j] = tile_pool.shift
+    board.each_index do |row|
+      board[row].each_index do |col|
+        board[row][col] = tile_pool.shift
+        board[row][col].neighbors = get_neighbors(row, col)
       end
     end
+  end
+  
+  def get_neighbors(x, y)
+    
   end
   
   def render_board
