@@ -1,3 +1,5 @@
+require_relative "tile"
+
 class Minesweeper
   def initialize(width = 9, height = 9, bombs = 10)
     self.board = generate_board(width, height, bombs)
@@ -5,7 +7,7 @@ class Minesweeper
   end
   
   def play
-    
+    self.render_board    
   end
   
   protected
@@ -26,7 +28,7 @@ class Minesweeper
     tile_pool.shuffle!
     
     board.each do |row|
-      row.each do |j|
+      row.each_index do |j|
         row[j] = tile_pool.shift
       end
     end
@@ -34,13 +36,14 @@ class Minesweeper
   
   def render_board
     board.each do |row|
-      row.each do |j|
+      row.each_index do |j|
         if row[j].revealed?
           print row[j].bomb_count
         else
           print "#"
         end
       end
+      print "\n"
     end
   end
 end
