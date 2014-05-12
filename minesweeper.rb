@@ -9,7 +9,7 @@ class Minesweeper
   
   def play
     until over?
-      render
+      render_board
       player_move
     end
   end
@@ -18,8 +18,8 @@ class Minesweeper
   attr_accessor :board, :bombs, :width, :height
   
   def revealed
-    self.board.inject do |sum, row|
-      sum + row.inject { |subsum, el| subsum += 1 if el.revealed? }
+    self.board.inject(0) do |sum, row|
+      sum + row.select { |el| el.revealed? }.count
     end
   end
   
