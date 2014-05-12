@@ -7,11 +7,22 @@ class Minesweeper
   end
   
   def play
-    self.render_board    
+    until over?
+      render
+      player_move
+    end
   end
   
   protected
   attr_accessor :board, :bombs
+  
+  def over?
+    
+  end
+  
+  def won?
+    
+  end
   
   def generate_board(width, height, bombs)
     board = [[nil] * width] * height
@@ -39,11 +50,34 @@ class Minesweeper
       row.each_index do |j|
         if row[j].revealed?
           print row[j].bomb_count
+        elsif row[j].flag?
+          print "?"
         else
           print "#"
         end
       end
       print "\n"
+    end
+  end
+  
+  def player_move
+    begin
+      move = gets.chomp
+      action = move[0]
+      coordinates = move[1..-1]
+      coordinates = coordinates.split(",")
+    
+      case action
+      when "r"
+        reveal(*coordinates)
+      when "f"
+        flag(*coordinates)
+      else
+        raise "That is not an action."
+      end
+    rescue Exception => e
+      e.message
+      retry
     end
   end
 end
