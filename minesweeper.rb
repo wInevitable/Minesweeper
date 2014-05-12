@@ -3,6 +3,7 @@ require_relative "tile"
 class Minesweeper
   def initialize(width = 9, height = 9, bombs = 10)
     self.board = generate_board(width, height, bombs)
+    self.width, self.height = width, height
     self.bombs = bombs
   end
   
@@ -14,10 +15,22 @@ class Minesweeper
   end
   
   protected
-  attr_accessor :board, :bombs
+  attr_accessor :board, :bombs, :width, :height
+  
+  def revealed
+    self.board.inject do |sum, row|
+      sum + row.inject { |subsum, el| subsum += 1 if el.revealed? }
+    end
+  end
   
   def over?
-    
+    bomb_revealed = self.board.any? do |row|
+      row.any? do |tile|
+        tile.bomb? && tile.revealed?
+      end
+    end
+
+    bomb_revealed || (width * height - bombs) == revealed
   end
   
   def won?
@@ -58,6 +71,14 @@ class Minesweeper
       end
       print "\n"
     end
+  end
+  
+  def flag(x, y)
+    self.board[x][y].flag = true
+  end
+  
+  def reveal(x, y)
+    self.board[x][y].revealed = true
   end
   
   def player_move
