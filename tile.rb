@@ -1,10 +1,10 @@
 class Tile
   attr_writer :bomb, :flag, :revealed
   
-  attr_accessor :bomb_count, :neighbors
+  attr_accessor :neighbors
   
-  def initialize(bomb = false, flag = false, bomb_count = 0)
-    @bomb, @flag, @bomb_count = bomb, flag, bomb_count
+  def initialize(bomb = false, flag = false)
+    @bomb, @flag = bomb, flag
     @revealed = false
     @neighbors = []
   end
@@ -19,5 +19,13 @@ class Tile
   
   def revealed?
     @revealed
+  end
+  
+  def bomb_count
+    bomb_count = 0
+    @neighbors.each do |neigh|
+       bomb_count += 1 if neigh.bomb?
+     end
+     bomb_count
   end
 end

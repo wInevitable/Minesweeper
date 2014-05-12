@@ -4,6 +4,7 @@ class Minesweeper
   def initialize(width = 9, height = 9, bombs = 10)
     self.width, self.height = width, height
     self.bombs = bombs
+    self.board = Array.new(@height) {|index| [nil] * @width}
   end
   
   def play
@@ -45,9 +46,7 @@ class Minesweeper
     
   end
   
-  def generate_board
-    @board = Array.new(@height) {|index| [nil] * @width}
-    
+  def generate_board    
     tile_pool = []
     @bombs.times do
       tile_pool << Tile.new(true)
@@ -88,7 +87,7 @@ class Minesweeper
     @board.each do |row|
       row.each_index do |j|
         if row[j].revealed?
-          print row[j].bomb_count
+          print "#{row[j].bomb_count}"
         elsif row[j].flag?
           print "?"
         else
