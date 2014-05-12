@@ -25,14 +25,22 @@ class Minesweeper
     
     tile_pool.shuffle!
     
-    board.each do |i|
-      board[i].each do |j|
-        board[i][j] = tile_pool.shift
+    board.each do |row|
+      row.each do |j|
+        row[j] = tile_pool.shift
       end
     end
   end
   
   def render_board
-    
+    board.each do |row|
+      row.each do |j|
+        if row[j].revealed?
+          print row[j].bomb_count
+        else
+          print "#"
+        end
+      end
+    end
   end
 end
