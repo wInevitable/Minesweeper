@@ -28,4 +28,14 @@ class Tile
      end
      bomb_count
   end
+  
+  def to_s
+    if self.revealed?
+      "#{self.bomb_count}"
+    elsif self.flag?
+      "?"
+    else
+      "#"
+    end
+  end
 end

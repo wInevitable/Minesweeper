@@ -107,12 +107,8 @@ class Minesweeper
         tile = @board[row][j]
         if render_bombs && tile.bomb?
           print "*"
-        elsif tile.revealed?
-          print "#{tile.bomb_count}"
-        elsif tile.flag?
-          print "?"
         else
-          print "#"
+          print "#{tile}"
         end
       end
       print "\n"
