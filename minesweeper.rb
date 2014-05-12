@@ -7,7 +7,7 @@ class Minesweeper
     self.bombs = bombs
   end
   
-  def play
+  def play    
     until over?
       render_board
       player_move
@@ -94,9 +94,9 @@ class Minesweeper
       when "f"
         flag(*coordinates)
       else
-        raise "That is not an action."
+        raise IOError.new("That is not an action.")
       end
-    rescue Exception => e
+    rescue IOError => e
       e.message
       retry
     end
