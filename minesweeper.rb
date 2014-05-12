@@ -14,6 +14,13 @@ class Minesweeper
       render_board
       player_move
     end
+    
+    render_board(true)
+    if won?
+      puts "You Win!"
+    else
+      puts "Try Again!"
+    end
   end
   
   protected
@@ -33,17 +40,19 @@ class Minesweeper
   end
   
   def over?
-    bomb_revealed = self.board.any? do |row|
-      row.any? do |tile|
-        tile.bomb? && tile.revealed?
-      end
-    end
-
     bomb_revealed || (@width * @height - @bombs) == revealed
   end
   
   def won?
-    
+    !bomb_revealed
+  end
+  
+  def bomb_revealed
+    self.board.any? do |row|
+      row.any? do |tile|
+        tile.bomb? && tile.revealed?
+      end
+    end
   end
   
   def generate_board    
@@ -83,10 +92,12 @@ class Minesweeper
     neighbors
   end
   
-  def render_board
+  def render_board(render_bombs = false)
     @board.each do |row|
       row.each_index do |j|
-        if row[j].revealed?
+        if render_bombs && row[j].bomb?
+          print "*"
+        elsif row[j].revealed?
           print "#{row[j].bomb_count}"
         elsif row[j].flag?
           print "?"
@@ -115,6 +126,7 @@ class Minesweeper
       if this_tile.bomb_count == 0
         new_tiles = this_tile.neighbors
         new_tiles.select! { |t| !seen_tiles.include?(t) }
+        new_tiles.select! { |t| !t.flag? }
         queue += new_tiles
       end
     end
