@@ -1,21 +1,22 @@
 require_relative "tile"
+require_relative "board"
 
 class Minesweeper
   def initialize(width = 9, height = 9, bombs = 10)
     self.width, self.height = width, height
     self.bombs = bombs
-    self.board = Array.new(@height) {|index| [nil] * @width}
+    self.board = Board.new(width, height, bombs)
   end
   
   def play
-    generate_board
+    self.board.generate
        
     until over?
-      render_board
+      self.board.render
       player_move
     end
     
-    render_board(true)
+    self.board.render(true)
     if won?
       puts "You Win!"
     else
@@ -24,120 +25,15 @@ class Minesweeper
   end
   
   protected
-  attr_accessor :board, :bombs, :width, :height
-  
-  DELTAS = [
-    [1, 0], [-1, 0],
-    [0, 1], [0, -1],
-    [-1, 1], [1, -1],
-    [-1, -1], [1, 1]
-  ]
-  
-  def revealed
-    self.board.inject(0) do |sum, row|
-      sum + row.select { |el| el.revealed? }.count
-    end
-  end
+  attr_accessor :board, :width, :height, :bombs
   
   def over?
-    bomb_revealed || (@width * @height - @bombs) == revealed
+    self.board.bomb_revealed ||
+    (@width * @height - @bombs) == self.board.revealed
   end
   
   def won?
-    !bomb_revealed
-  end
-  
-  def bomb_revealed
-    self.board.any? do |row|
-      row.any? do |tile|
-        tile.bomb? && tile.revealed?
-      end
-    end
-  end
-  
-  def generate_board    
-    tile_pool = []
-    @bombs.times do
-      tile_pool << Tile.new(true)
-    end
-    
-    (@width * @height - @bombs).times do
-      tile_pool << Tile.new
-    end
-    
-    tile_pool.shuffle!
-    
-    @board.each_index do |row|
-      @board[row].each_index do |col|
-        @board[row][col] = tile_pool.shift
-      end
-    end
-    
-    @board.each_index do |row|
-      @board[row].each_index do |col|
-        @board[row][col].neighbors = get_neighbors(row, col)
-      end
-    end
-  end
-  
-  def get_neighbors(row, col)
-    positions = DELTAS.map { |r, c| [row + r, col + c] }
-    positions.select! { |r, c| r >= 0 && c >= 0 && r < height && c < width }
- 
-    neighbors = []
-    positions.each do |pos|
-      neighbors << @board[pos[0]][pos[1]]
-    end
-    
-    neighbors
-  end
-  
-  def render_board(render_bombs = false)
-    print "  |"
-    @board[0].each_index do |i|
-      print i
-    end
-    
-    puts
-    puts "-" * (@width + 3)
-    
-    @board.each_index do |row|
-      print "#{row} |"
-      @board[row].each_index do |j|
-        tile = @board[row][j]
-        if render_bombs && tile.bomb?
-          print "*"
-        else
-          print "#{tile}"
-        end
-      end
-      print "\n"
-    end
-  end
-  
-  def flag(x, y)
-    self.board[x][y].flag = true
-  end
-  
-  def reveal(x, y)
-    tile = self.board[x][y]
-    queue = [tile]
-    seen_tiles = []
-    
-    until queue.empty?
-      this_tile = queue.shift
-      this_tile.revealed = true
-      seen_tiles << this_tile
-      
-      if this_tile.bomb_count == 0
-        new_tiles = this_tile.neighbors
-        new_tiles.select! { |t| !seen_tiles.include?(t) }
-        new_tiles.select! { |t| !t.flag? }
-        queue += new_tiles
-      end
-    end
-    
-    nil
+    !self.board.bomb_revealed
   end
   
   def player_move
@@ -150,9 +46,9 @@ class Minesweeper
     
       case action
       when "r"
-        reveal(*coordinates)
+        self.board.reveal(*coordinates)
       when "f"
-        flag(*coordinates)
+        self.board.flag(*coordinates)
       else
         raise IOError.new("That is not an action.")
       end
