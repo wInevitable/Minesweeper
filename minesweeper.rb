@@ -93,13 +93,23 @@ class Minesweeper
   end
   
   def render_board(render_bombs = false)
-    @board.each do |row|
-      row.each_index do |j|
-        if render_bombs && row[j].bomb?
+    print "  |"
+    @board[0].each_index do |i|
+      print i
+    end
+    
+    puts
+    puts "-" * (@width + 3)
+    
+    @board.each_index do |row|
+      print "#{row} |"
+      @board[row].each_index do |j|
+        tile = @board[row][j]
+        if render_bombs && tile.bomb?
           print "*"
-        elsif row[j].revealed?
-          print "#{row[j].bomb_count}"
-        elsif row[j].flag?
+        elsif tile.revealed?
+          print "#{tile.bomb_count}"
+        elsif tile.flag?
           print "?"
         else
           print "#"
@@ -155,4 +165,8 @@ class Minesweeper
       retry
     end
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  Minesweeper.new.play
 end
