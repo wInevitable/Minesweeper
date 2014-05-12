@@ -10,7 +10,8 @@ class Minesweeper
   end
 
   def load(file)
-      
+    saved_board = File.read(file)
+    self.board = YAML.load(saved_board)
   end
   
   def save(file)
@@ -52,7 +53,7 @@ class Minesweeper
       move = gets.chomp
       action = move[0]
       arg = move[1..-1]
-      if action != "s"
+      if action != "s" && action != "l"
         coordinates = arg.split(",")
         coordinates.map! {|el| Integer(el)}
       end
@@ -64,6 +65,8 @@ class Minesweeper
         self.board.flag(*coordinates)
       when "s"
         self.save(arg)
+      when "l"
+        self.load(arg)
       else
         raise IOError.new("That is not an action.")
       end
