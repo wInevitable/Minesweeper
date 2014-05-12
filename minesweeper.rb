@@ -54,7 +54,8 @@ class Minesweeper
       move = gets.chomp
       action, arg = move.split(" ")
       
-      if action != "s" && action != "l"
+      commands = ["s", "l", "q"]
+      if !commands.include?(action)
         coordinates = arg.split(",")
         coordinates.map! {|el| Integer(el)}
       end
