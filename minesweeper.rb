@@ -50,9 +50,10 @@ class Minesweeper
   
   def player_move
     begin
+      print "> "
       move = gets.chomp
-      action = move[0]
-      arg = move[1..-1]
+      action, arg = move.split(" ")
+      
       if action != "s" && action != "l"
         coordinates = arg.split(",")
         coordinates.map! {|el| Integer(el)}
